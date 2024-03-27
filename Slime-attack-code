@@ -1,0 +1,108 @@
+from time import sleep
+
+class Player1:
+    def __init__(self, name, type, height, health):
+        self.name = name
+        self.type = type
+        self.height = height
+        self.health = health
+        self.attack_speed = 0.5  # Default attack speed
+
+    def display_stats(self):
+        print(f"{self.name}\n{self.type}\nYour height: {self.height}ft \nYour health: {self.health} \n")
+
+class Weapon:
+    def __init__(self, name, weapon_speed, damage):
+        self.weapon_speed = weapon_speed
+        self.name = name
+        self.damage = damage
+
+class Monster(Player1):
+    def __init__(self, name, type, height, health, attack_dmg, take_dmg):
+        super().__init__(name, type, height, health)
+        self.attack_dmg = attack_dmg
+        self.take_dmg = take_dmg
+   
+    def take_damage(self, damage):
+        self.health -= damage
+
+Harith = Player1("Harith", "Swordsmen", 6, 100)
+Sword = Weapon("Sword", 1, 15)
+Axe = Weapon("Axe", 2, 25)
+Slime = Monster("Slime", "Monster", 4, 50, 10, 5)
+
+print(f"Welcome {Harith.name}, your stats are displayed here:")
+Harith.display_stats()
+
+choice1 = input("You are greeted by a slime. What will you do? (Type 'attack' to attack or 'leave' to leave) ")
+
+if choice1 == "attack":
+    print(f"You are attacking {Slime.name}")
+    weapon_choice = input("Choose your weapon (sword or axe): ")
+
+    if weapon_choice == "sword":
+        damage_dealt = Sword.damage
+        weapon_speed = Sword.weapon_speed
+        print(f"You choose the {Sword.name}")
+    elif weapon_choice == "axe":
+        damage_dealt = Axe.damage
+        weapon_speed = Axe.weapon_speed
+        print(f"You choose the {Axe.name}")
+    else:
+        print("Invalid weapon choice.")
+        damage_dealt = 0
+        weapon_speed = 0
+
+    print(f"You swing your {weapon_choice}.")
+    Slime.take_damage(damage_dealt)
+    print(f"{Slime.name} health after the attack: {Slime.health}")
+
+    # Cooldown based on attack speed
+    sleep(Harith.attack_speed)
+
+    print(f"It's {Slime.name}'s turn to attack")
+    print(f"{Slime.name} bounces on you and deals {Slime.attack_dmg}")
+    Harith.health -= Slime.attack_dmg
+    print(f"Your health is now {Harith.health}")
+
+    while Slime.health > 0:
+        if weapon_speed == 1:
+            choice2 = input(f"It's your turn. Will you attack or escape? ")
+            if choice2 == "attack":
+                print(f"You attack and deal {damage_dealt}")
+                Slime.take_damage(damage_dealt)
+                print(f"{Slime.name} health after the attack: {Slime.health}")
+                if Slime.health <= 0:
+                    print(f"You have killed the {Slime.name}")
+                    break
+            elif choice2 == "escape":
+                print("You escaped!")
+                break
+            else:
+                print("Invalid choice.")
+        elif weapon_speed == 2:
+            print("You're tired. The slime attacks back!")
+            Harith.health -= Slime.attack_dmg
+            print(f"Your health is now {Harith.health}")
+            choice3 = input(f"Do you want to attack or leave? ")
+            if choice3 == "attack":
+                if Slime.health == 0:
+                    print(f"You have killed the {Slime.name}")
+                    break
+                else:
+                    print(f"You attack and deal {damage_dealt}")
+                    Slime.take_damage(damage_dealt)
+                    print(f"{Slime.name} health after the attack: {Slime.health}")
+            elif choice3 == "leave":
+                print("You escaped!")
+                break
+            else:
+                print("Invalid choice.")
+            
+
+elif choice1 == "leave":
+    print("You leave successfully.")
+    # Add code here for what happens when the player chooses to leave
+else:
+    print("Invalid choice. You stand still.")
+    # Add code here for what happens when the player enters an invalid option
